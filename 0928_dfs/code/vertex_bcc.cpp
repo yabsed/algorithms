@@ -68,11 +68,13 @@ void dfs(int v, int parent_edge = -1) {
                 }
             }
         }
-
-        // back edge to an ancestor
-        else if (disc[v] > disc[u]){
-            edge_stack.push(id); 
+        else {
             low[v] = min(low[v], disc[u]); 
+
+            // back edge to an ancestor
+            if (disc[u] < disc[v]){
+                edge_stack.push(id); 
+            }
         }
     }
 
