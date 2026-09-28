@@ -8,7 +8,8 @@ int timer = 0;
 
 // edge
 struct Edge {
-    int to, id;
+    int to; 
+    int id;
 };
 
 vector<vector<Edge>> adj;
@@ -19,61 +20,71 @@ vector<vector<int>> bccs;
 stack<int> edge_stack;
 
 void pop_bcc(int until) {
-    vector<int> bcc;
 
-    while (true) {
-        int id = edge_stack.top();
-        edge_stack.pop();
+    vector<int> bcc; 
 
-        bcc.push_back(id);
+    while(!edge_stack.empty()){
 
-        if (id == until)
-            break;
+        int id = edge_stack.top(); 
+        edge_stack.pop(); 
+
+        bcc.push_back(id); 
+
+        if (id == until){
+            break; 
+        }
     }
-
-    bccs.push_back(bcc);
+    bccs.push_back(bcc); 
 }
 
 void dfs(int v, int parent_edge = -1) {
-    disc[v] = low[v] = ++timer;
+
+    disc[v] = low[v] = ++timer; 
 
     int children = 0;
 
-    for (auto [u, id] : adj[v]) {
-        if (id == parent_edge)
-            continue;
+    for(auto [u, id]: adj[v]){
 
-        // tree edge
-        if (!disc[u]) {
-            edge_stack.push(id);
-            children++;
+        if (id == parent_edge){
+            continue; 
+        }
 
-            dfs(u, id);
+        else if (disc[u] == 0){
 
-            low[v] = min(low[v], low[u]);
+            edge_stack.push(id); 
+            children++; 
+            
+            dfs(u, id); 
 
-            // cut vertex
-            if (parent_edge != -1 && low[u] >= disc[v])
-                cut[v] = true;
+            low[v] = min(low[v], low[u]); 
+            
+            // BCC complete
+            if (disc[v] <= low[u]){
+                pop_bcc(id); 
 
-            // one BCC is complete
-            if (low[u] >= disc[v])
-                pop_bcc(id);
+                // cut vertex
+                if(parent_edge != -1){
+                    cut[v] = true; 
+                }
+            }
         }
 
         // back edge to an ancestor
-        else if (disc[u] < disc[v]) {
-            edge_stack.push(id);
-            low[v] = min(low[v], disc[u]);
+        else if (disc[v] > disc[u]){
+            edge_stack.push(id); 
+            low[v] = min(low[v], disc[u]); 
         }
     }
 
     // DFS root
-    if (parent_edge == -1 && children >= 2)
-        cut[v] = true;
+    if (parent_edge == -1 && children >= 2){
+        cut[v] = true; 
+    }
 }
 
 int main() {
+
+    // verticies, edges
     int n, m;
     scanf("%d %d", &n, &m);
 
@@ -82,11 +93,14 @@ int main() {
     low.resize(n + 1);
     cut.resize(n + 1);
 
+    // scan edges
     for (int id = 0; id < m; id++) {
+
         int u, v;
         scanf("%d %d", &u, &v);
 
         edges.push_back({u, v});
+
         adj[u].push_back({v, id});
         adj[v].push_back({u, id});
     }
