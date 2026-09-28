@@ -27,3 +27,12 @@ vector<vector<int>> gen_table(vector<int> values){
 
     return result; 
 }
+
+int query(vector<vector<int>> &table, int l, int r){
+    
+    // assume l <= r
+    int len = r - l + 1; 
+
+    int msb = __lg(len);
+    return max(table[msb][l], table[msb][r-(1<<msb)+1]); 
+}
