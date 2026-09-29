@@ -1,0 +1,6 @@
+xor은
+
+bitwise parity 측정기, 
+0에선 보존
+1에선 toggle
+x ^ y에선 달라야 생존
