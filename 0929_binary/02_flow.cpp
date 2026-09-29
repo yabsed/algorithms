@@ -1,137 +1,151 @@
 #include <bits/stdc++.h>
-using namespace std;
+using namespace std; 
 
-using ll = long long;
-
-const ll INF = numeric_limits<ll>::max() / 4;
+const long long INF = numeric_limits<long long>::max() / 4;
 
 struct Edge {
-    int to;
-    int rev;
-    ll cap;
-};
+    int to; 
+    int rev; 
+    long long cap; 
+};  
 
-int n, m;
-int s, t;
-
+// adj[v] has many edges 
 vector<vector<Edge>> adj;
 
-void append(int u, int v, ll c) {
+// new edge u --(c)--> v
+void append(int u, int v, long long c){
 
-    // u -----> v
-    Edge fwd = {v, (int)adj[v].size(), c};
-    Edge bwd = {u, (int)adj[u].size(), 0};
+    // consider self-loop
+    if(u == v) return; 
 
-    adj[u].push_back(fwd);
-    adj[v].push_back(bwd);
+    Edge fwd = {v, (int)adj[v].size(), c}; 
+    Edge bwd = {u, (int)adj[u].size(), 0}; 
+
+    adj[u].push_back(fwd); 
+    adj[v].push_back(bwd); 
 }
 
-// parent[v] = {previous vertex, edge index}
-bool bfs(vector<pair<int, int>> &parent) {
+// vertices, edges
+int n, m; 
 
-    parent.assign(n, {-1, -1});
+// start, finish
+int s, t; 
 
-    queue<int> q;
-    q.push(s);
+bool bfs(vector<pair<int, int>> &parent){
 
-    parent[s] = {s, -1};
+    // in u --(idx)--> v connection
+    // parent[v] saves {u, idx}
 
-    while (!q.empty()) {
+    parent.assign(n, {-1, -1}); 
+    queue<int> q; 
 
-        int from = q.front();
-        q.pop();
+    q.push(s); 
+    parent[s] = {s, -1}; 
 
-        for (int i = 0; i < (int)adj[from].size(); i++) {
+    while(!q.empty()){
 
-            const Edge &fwd = adj[from][i];
+        int from = q.front(); 
+        q.pop(); 
 
-            int to = fwd.to;
+        for(int i=0;i<adj[from].size();i++){
+
+            Edge e = adj[from][i]; 
 
             // already visited
-            if (parent[to].first != -1) {
-                continue;
+            if(parent[e.to].first != -1){
+                continue; 
             }
 
-            // zero capacity
-            if (fwd.cap <= 0) {
-                continue;
+            // no extra capacity
+            if(e.cap <= 0){
+                continue; 
             }
 
-            parent[to] = {from, i};
+            parent[e.to] = {from, i}; 
 
-            if (to == t) {
-                return true;
+            // arrived finishing point
+            if (e.to == t){
+                return true; 
             }
 
-            q.push(to);
+            q.push(e.to); 
         }
+
     }
 
-    return false;
+    return false; 
+    
 }
 
-ll max_flow() {
+int main(){
 
-    ll result = 0;
+    scanf("%d %d", &n, &m); 
+    adj.assign(n, {}); 
+
+    scanf("%d %d", &s, &t); 
+    // 1-based
+    --s, --t; 
+
+    for(int i=0;i<m;i++){
+
+        int u, v; 
+        long long c; 
+        scanf("%d %d %lld", &u, &v, &c); 
+
+        // 1-based
+        --u, --v; 
+        append(u, v, c); 
+    }
+
+    long long maxFlow = 0; 
 
     vector<pair<int, int>> parent;
+    
+    while(bfs(parent)){
 
-    while (bfs(parent)) {
+        long long flow = INF; 
 
-        ll flow = INF;
+        // detect flow size
+        for(int to = t; to != s; ){
 
-        // find bottleneck
-        for (int to = t; to != s; ) {
+            auto [from, idx] = parent[to]; 
+            Edge &fwd = adj[from][idx]; 
 
-            auto [from, idx] = parent[to];
+            flow = min(flow, fwd.cap); 
 
-            Edge &fwd = adj[from][idx];
-
-            flow = min(flow, fwd.cap);
-
-            to = from;
+            to = from; 
         }
 
-        // augment
-        for (int to = t; to != s; ) {
+        // move capacity from fwd to bwd
+        for(int to = t; to != s; ){
 
-            auto [from, idx] = parent[to];
+            auto [from, idx] = parent[to]; 
+
+            // GPT recommneds me to use reference
 
             Edge &fwd = adj[from][idx];
-            Edge &bwd = adj[fwd.to][fwd.rev];
+            Edge &bwd = adj[to]  [fwd.rev]; 
 
-            fwd.cap -= flow;
-            bwd.cap += flow;
+            fwd.cap -= flow; 
+            bwd.cap += flow; 
+            
+            // alternative : use pointer 
 
-            to = from;
+            // Edge* fwd = &adj[from][idx]; 
+            // Edge* bwd = &adj[to]  [fwd->rev]; 
+
+            // fwd->cap -= flow; 
+            // bwd->cap += flow; 
+
+            to = from; 
         }
 
-        result += flow;
+        maxFlow += flow; 
     }
 
-    return result;
-}
 
-int main() {
+    printf("%lld", maxFlow); 
 
-    scanf("%d %d", &n, &m);
+    // adj represents final residual graph
 
-    adj.assign(n, {});
-
-    scanf("%d %d", &s, &t);
-    --s, --t;  // 1-based
-
-    for (int i = 0; i < m; i++) {
-
-        int u, v;
-        ll c;
-
-        scanf("%d %d %lld", &u, &v, &c);
-
-        --u, --v;  // 1-based
-
-        append(u, v, c);
-    }
-
-    printf("%lld\n", max_flow());
 }
