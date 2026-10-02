@@ -104,6 +104,10 @@ ll search(int idx,
     ); 
 }
 
+// build  ->        build,  build, pull
+// update -> push, update, update, pull
+// search -> push, search, search
+
 int main(){
 
     int n; 
