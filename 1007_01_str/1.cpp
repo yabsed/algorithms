@@ -168,10 +168,31 @@ void test4() {
     cout << s << endl; // hello
 }
 
+
+
 void test5(){
 
+    string prev(1000, 'd'); 
+
+    auto old = prev.data(); // char *
+
+    string curr = move(prev); 
     
+    cout << (old == curr.data()) << '\n'; // true
+    cout << (prev.data() == curr.data()) << '\n'; // false
+
 }
+
+void test6(){
+
+    string s = "hello"; 
+
+    cout << s.size() << endl; // 5
+    cout << s.length() << endl; // 5
+    cout << s.empty() << endl; // false
+
+}
+
 
 int main(){
 
