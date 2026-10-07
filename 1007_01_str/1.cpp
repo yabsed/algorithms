@@ -66,26 +66,26 @@ void test1(){
 
     // expected
 
-    /*
+/*
+    char   isdigit   isalpha   isalnum   islower   isupper   isspace   ispunct  isxdigit   iscntrl   isprint   isgraph
+    [\t]                                                         Yes                           Yes                    
+    [\n]                                                         Yes                           Yes                    
+[space]                                                         Yes                                     Yes          
+        !                                                                   Yes                           Yes       Yes
+        0       Yes                 Yes                                               Yes                 Yes       Yes
+        1       Yes                 Yes                                               Yes                 Yes       Yes
+        9       Yes                 Yes                                               Yes                 Yes       Yes
+        @                                                                   Yes                           Yes       Yes
+        A                 Yes       Yes                 Yes                           Yes                 Yes       Yes
+        F                 Yes       Yes                 Yes                           Yes                 Yes       Yes
+        G                 Yes       Yes                 Yes                                               Yes       Yes
+        _                                                                   Yes                           Yes       Yes
+        a                 Yes       Yes       Yes                                     Yes                 Yes       Yes
+        f                 Yes       Yes       Yes                                     Yes                 Yes       Yes
+        g                 Yes       Yes       Yes                                                         Yes       Yes
 
-      char   isdigit   isalpha   isalnum   islower   isupper   isspace   ispunct  isxdigit   iscntrl   isprint   isgraph
-      [\t]                                                         Yes                           Yes                    
-      [\n]                                                         Yes                           Yes                    
-   [space]                                                         Yes                                     Yes          
-         !                                                                   Yes                           Yes       Yes
-         0       Yes                 Yes                                               Yes                 Yes       Yes
-         1       Yes                 Yes                                               Yes                 Yes       Yes
-         9       Yes                 Yes                                               Yes                 Yes       Yes
-         @                                                                   Yes                           Yes       Yes
-         A                 Yes       Yes                 Yes                           Yes                 Yes       Yes
-         F                 Yes       Yes                 Yes                           Yes                 Yes       Yes
-         G                 Yes       Yes                 Yes                                               Yes       Yes
-         _                                                                   Yes                           Yes       Yes
-         a                 Yes       Yes       Yes                                     Yes                 Yes       Yes
-         f                 Yes       Yes       Yes                                     Yes                 Yes       Yes
-         g                 Yes       Yes       Yes                                                         Yes       Yes
+*/
 
-    */
 
 }
 
@@ -415,8 +415,127 @@ void test13(){
 
 }
 
+void test14() {
+
+    auto func = [](int n) -> string{
+        string s;
+        for(int i=0;i<n;i++){
+            s.push_back('a' + (i % 26)); 
+        }
+        return s; 
+    }; 
+
+    // append string
+    string s = ""; 
+    s.append("abcdef"); 
+    s.append("abcdef", 2, 1);  
+    cout << s << endl; // abcdefc
+    
+    // append buf
+    char buf[10]; 
+    strcpy(buf, func(5).c_str()); 
+    
+    s.clear(); 
+    s.append(buf, 2); 
+    cout << s << endl; // ab
+
+    // append char
+    s.clear(); 
+    s.append(5, 'x'); 
+    cout << s << endl; // xxxxx
+
+    // append iterator range
+    vector<char> v = [func](){
+        string s = func(20); 
+        return vector<char>(s.begin(), s.end()); 
+    }(); 
+    s.clear(); 
+    s.append(v.begin(), v.begin()+5); 
+    cout << s << endl; // abcde
+
+}
+
+void test15() {
+
+    string s = "hello"; 
+
+    s.pop_back(); 
+
+    cout << s << endl; // hell
+
+}
+
+void test16() {
+
+    // ABCD...
+    auto func = [](int n){
+        string s; 
+        for(int i=0;i<n;i++){
+            s.push_back('A' + (i % 26)); 
+        }
+        return s; 
+    }; 
+
+    string s; 
+
+    // assign string
+    s.assign(func(5)); 
+    cout << s << endl; 
+
+    // assign partial string
+    s.clear(); 
+    s.assign(func(15), 2, 3); // CDE
+    cout << s << endl; 
+
+    // assign buf
+    char buf[100]; 
+    strcpy(buf, func(15).c_str()); 
+
+    s.clear(); 
+    s.assign(buf, 7); // ABCDEFG
+    cout << s << endl; 
+
+    // in this case 
+    // buf is considered to be str
+    s.clear(); 
+    s.assign(buf, 2, 3); // CDE
+    cout <<s << endl; 
+
+    // assign from iterator
+    vector<char> v = [func]() {
+        string s = func(20); 
+        return vector<char> (s.begin(), s.end()); 
+    }(); 
+    s.clear(); 
+    s.assign(v.begin(), v.begin()+2); // AB
+    cout << s << endl; 
+
+    // assign from char
+    s.clear(); 
+    s.assign(5, 'x'); // xxxxx
+    cout << s << endl; 
+
+}
+
+void test17() {
+
+    auto func = [](int n){
+        string s(n, '\0'); 
+        for(int i=0;i<n;i++){
+            s[i] = 'A' + (i % 26); 
+        }
+        return s; 
+    }; 
+
+    string s = func(10); 
+    s.insert(2, "  "); 
+
+    cout << s << endl; // AB  CDEFGHIJ
+
+}
+
 
 int main(){
 
-    test13(); 
+    test17(); 
 }
