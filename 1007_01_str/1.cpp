@@ -534,8 +534,20 @@ void test17() {
 
 }
 
+void test18() {
+
+    string s = "ddddaaaaabbbc"; 
+
+    sort(s.begin(), s.end()); 
+
+    s.erase(unique(s.begin(), s.end()), s.end()); 
+
+    cout << s << endl; // abcd
+
+}
+
 
 int main(){
 
-    test17(); 
+    test18(); 
 }
