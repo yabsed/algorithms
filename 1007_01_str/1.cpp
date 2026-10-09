@@ -986,15 +986,105 @@ void test32() {
     cout << (p[0] == 'h') << endl; // true
 }
 
-void test33(){
+void test33() {
 
-    int x = stoi("")
+    // int
+    cout << stoi("2147483647") << endl;
+    cout << stoi("-2147483648") << endl;
 
+    // long
+    cout << stol("9223372036854775807") << endl;
+    cout << stol("-9223372036854775808") << endl;
+
+    // long long
+    cout << stoll("9223372036854775807") << endl;
+    cout << stoll("-9223372036854775808") << endl;
+
+    // unsigned long
+    cout << stoul("18446744073709551615") << endl;
+
+    // unsigned long long
+    cout << stoull("18446744073709551615") << endl;
+
+    // floating point
+    cout << scientific << setprecision(18);
+
+    // float
+    cout << stof("3.4e38") << endl;
+    cout << stof("-3.4e38") << endl;
+
+    // double
+    cout << stod("1.7e308") << endl;
+    cout << stod("-1.7e308") << endl;
+
+    // long double
+    cout << stold("1e4000") << endl;
+    cout << stold("-1e4000") << endl;
 }
 
+void test34() {
+
+    string ip = "124.5.7.0"; 
+
+    // goal: validity of ip addr
+    vector<int> positions = {-1, }; 
+    size_t pos = 0; 
+    while((pos = ip.find('.', pos)) != string::npos){
+        positions.push_back(pos++); 
+    }
+    positions.push_back(ip.size()); 
+
+    // has tree dots?
+    if(positions.size() != 5){
+        printf("INVALID\n"); 
+        return; 
+    }
+
+    // investigate chunks
+    for(int i=0;i<4;i++){
+
+        int pos1 = positions[i]; 
+        int pos2 = positions[i+1]; 
+
+        // .123.
+        if (pos2 - pos1 > 4){
+            printf("INVALID\n"); 
+            return; 
+        }
+
+        // ..
+        if (pos2 - pos1 <= 1){
+            printf("INVALID\n"); 
+            return; 
+        }
+
+        string chunk = ip.substr(pos1+1, pos2-pos1-1);
+
+        // not pure numbers
+        if (string::npos != chunk.find_first_not_of("0123456789", 0)){
+            printf("INVALID\n"); 
+            return; 
+        } 
+
+        // unnecessary 0
+        if(to_string(stoi(chunk)) != chunk){
+            printf("INVALID\n"); 
+            return; 
+        }
+
+        // invalid value
+        if(!(0 <= stoi(chunk) && stoi(chunk) <= 255)){
+            printf("INVALID\n"); 
+            return; 
+        }
+
+    }
+
+    printf("VALID\n"); 
+}
 
 int main(){
 
-    test33();
+    test34();
 
 }
