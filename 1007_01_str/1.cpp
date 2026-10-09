@@ -3,24 +3,24 @@ using namespace std;
 
 void test1(){
 
-    // 문자 종류
+    // char samples
+
     vector<char> samples = {
         'A', 'a', 
         'F', 'f', 
         'G', 'g', 
-        
         '0', '1', '9', 
-
-        '@', '!', '_', 
-
         ' ', 
-        '\n', '\t'
-    };
+        '\t', '\n',
+        '@', '_', '!'
+    }; 
 
     sort(samples.begin(), samples.end()); 
 
-    // helper 함수들
+    // helper functions
+
     using CharFunc = int (*)(int); 
+
     vector<pair<string, CharFunc>> tests = {
         {"isdigit", ::isdigit}, 
         {"isalpha", ::isalpha}, 
@@ -31,184 +31,178 @@ void test1(){
         {"ispunct", ::ispunct}, 
         {"isxdigit", ::isxdigit},
         {"iscntrl", ::iscntrl}, 
-        {"isprint", ::isprint}, 
+        {"isprint", ::isprint},
         {"isgraph", ::isgraph}
     }; 
 
-    // 함수 이름 출력
-    printf("%10s", "char"); 
+    // print names of functions
 
-    for(auto &[name, func] : tests)
+    printf("%10s", "char"); 
+    for(auto [name, func]: tests){
         printf("%10s", name.c_str()); 
-    
+    }
     printf("\n"); 
 
-    // 각 문자 테스트
+    /*
+    put c_str() otherwise you will see 
+    strange characters
+    */
+
+    // test each characters
+
     for(char sample: samples){
 
-        printf("%10s", [&]() -> string {
+        /*
+        without specifying type
+        lambda don't know its returning type -> crash
+        */
+
+        // print sample 
+        printf("%10s", [sample]() -> string {
             switch(sample){
-                case ' ': return "[space]"; 
-                case '\t': return "[\\t]"; 
-                case '\n': return "[\\n]"; 
-                default:   return string(1, sample); 
+                case ' ': return "[space]"; // const char*
+                case '\t': return "[\\t]"; // const char*
+                case '\n': return "[\\n]"; // const char*
+                default: return string(1, sample); // string
             }
         }().c_str()); 
 
-        for (auto &[name, func] : tests){
-            bool result = func((unsigned char) sample) != 0; 
-            printf("%10s", result ? "Yes" : ""); 
+        // print test results
+        for(auto [name, func]: tests){
+            bool isTrue = func(sample) != 0;  
+            printf("%10s", isTrue ? "True" : "False"); 
+            /*
+            not using %s may occur error!
+            */
         }
-
         printf("\n"); 
-
     }
-
-    // expected
-
-/*
-    char   isdigit   isalpha   isalnum   islower   isupper   isspace   ispunct  isxdigit   iscntrl   isprint   isgraph
-    [\t]                                                         Yes                           Yes                    
-    [\n]                                                         Yes                           Yes                    
-[space]                                                         Yes                                     Yes          
-        !                                                                   Yes                           Yes       Yes
-        0       Yes                 Yes                                               Yes                 Yes       Yes
-        1       Yes                 Yes                                               Yes                 Yes       Yes
-        9       Yes                 Yes                                               Yes                 Yes       Yes
-        @                                                                   Yes                           Yes       Yes
-        A                 Yes       Yes                 Yes                           Yes                 Yes       Yes
-        F                 Yes       Yes                 Yes                           Yes                 Yes       Yes
-        G                 Yes       Yes                 Yes                                               Yes       Yes
-        _                                                                   Yes                           Yes       Yes
-        a                 Yes       Yes       Yes                                     Yes                 Yes       Yes
-        f                 Yes       Yes       Yes                                     Yes                 Yes       Yes
-        g                 Yes       Yes       Yes                                                         Yes       Yes
-
-*/
-
 
 }
 
-void test2() {
+void test2(){
+
+    // magic spell
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
     char c = 'A'; 
-    
+
     c = tolower(c); 
 
-    printf("%c\n", c); // a
+    cout << c << endl; 
 
     c = toupper(c); 
 
-    printf("%c\n", c); // A
-
+    cout << c << endl; 
 }
 
 void test3(){
- 
-    // 기본적인 선언
+
+    // magic spell
+    ios::sync_with_stdio(false); // not ios.sync...
+    cin.tie(nullptr); 
+
+    // rotating string
+    auto func = [](int n){
+        string s; 
+        for(int i=0;i<n;i++){
+            s.push_back('A' + (i % 26)); 
+        }
+        return s; 
+    }; 
+
+    // print vector
+    auto printVector = [](vector<char> v){
+        for(auto value: v){
+            printf("%c", value); 
+        }
+        printf("\n"); 
+    };
+
+    // --------------------------
+
     string a; 
     string b = "hello"; 
     string c("hello"); 
 
-    // 같은 문자 반복
-    string s(5, 'x'); 
+    // using char
+    string s(5, 'x'); // xxxxx
 
-    // 복사
+    // copy
     a = s; 
-    a[1] = 'a'; 
+    a[1] = 'a'; // xaxxx
 
     cout << a << endl; // xaxxx
     cout << s << endl; // xxxxx
     cout << endl; 
 
-    // string의 일부
-    s = "abcdefg";
-    
-    a = string(s, 2); // cdefg
-    b = string(s, 2, 3); // cde
+    // using string
+    s =        func(7);       // ABCDEFG
+    a = string(func(7), 1);    // BCDEFG
+    b = string(func(7), 1, 2); // BC
 
-    cout << s << endl; // abcdefg
-    cout << a << endl; //   cdefg
-    cout << b << endl; //   cde
+    printf("%7s\n", s.c_str()); 
+    printf("%7s\n", a.c_str());
+    printf("%3s\n", b.c_str());  
     cout << endl; 
 
-    // buf의 일부
-    char buf[] = "abcdefg"; 
-    
-    s = string(buf); // abcdefg
-    a = string(buf, 3); // abc
-    b = string(buf + 2, 3); // cde
+    // prepare buffer
+    char buf[100]; 
+    strcpy(buf, func(7).c_str()); // should use c_str()
 
-    cout << s << endl; 
-    cout << a << endl; 
-    cout << b << endl; 
+    printf("%s\n", buf); // ABCDEFG
+    printf("\n"); 
+
+    // using buf
+    s = string(buf);         // ABCDEFG
+    a = string(buf, 3);      // ABC
+    b = string(buf + 2, 3);     //CDE
+
+    printf("%7s\n", s.c_str()); 
+    printf("%3s\n", a.c_str());
+    printf("%5s\n", b.c_str());  
     cout << endl; 
+
+    // prepare vector
+    s = func(7);
+
+    vector<char> v(s.begin(), s.end());
+    s.clear(); 
+
+    printVector(v); // ABCDEFG
+    printf("%s\n", s.c_str()); // [empty]
+
+    // using vector
+    s = string(v.begin(), v.end()); 
+    v.clear(); 
+
+    printVector(v); // [empty]
+    printf("%s\n", s.c_str()); // ABCDEFG 
 
 }
 
 void test4() {
 
-    string s = "hello"; 
-    vector<char> v; 
-    
-    // string -> vector
-    v = vector(s.begin(), s.end());
-    s = string(); 
-    
-    cout.write(v.data(), v.size()); // hello
-    cout << endl; 
-    cout << s << endl; // [empty]
+    // magic spell
+    ios::sync_with_stdio(false); 
+    cin.tie(nullptr); 
 
-    // vector -> string
-    s = string(v.begin(), v.end()); 
-    v.clear(); 
+    string prev(100, 'd'); 
+    char* old = prev.data(); 
 
-    cout.write(v.data(), v.size()); // [empty]
-    cout << endl; 
-    cout << s << endl; // hello
+    // move
+    string curr = move(prev); 
+
+    // curr takes over [original heap buf]
+    cout << (old == curr.data()) << endl; // (mostly) true
+
+    // prev becomes [vaild-but-unspecified]
+    cout << (prev.data() == curr.data()) << endl; // (mostly) false; 
+
 }
-
-
 
 void test5(){
-
-    string prev(1000, 'd'); 
-
-    auto old = prev.data(); // char *
-
-    string curr = move(prev); 
-    
-    // heap buffer를 curr가 그대로 인수
-    cout << (old == curr.data()) << '\n'; // (mostly) true
-
-    // prev는 별도의 valid-but-unspecified 상태
-    cout << (prev.data() == curr.data()) << '\n'; // (mostly) false
-
-/*
-
-move 전
-
-prev
- └──────► [ d d d d ... d \0 ]
-            ^
-            old
-
-
-move 후
-
-curr
- └──────► [ d d d d ... d \0 ]
-            ^
-            old
-
-prev
- └──────► 다른 저장소/빈 문자열 등
-
-*/
-
-}
-
-void test6(){
 
     string s = "hello"; 
 
@@ -218,336 +212,332 @@ void test6(){
 
 }
 
-void test7(){
+void test6() {
 
-    // string has capacity
+    auto printString = [](string &s){
+        printf("%d/%d\n", s.length(), s.capacity()); 
+    };
+
+    // init
     string s; 
-    cout << s.capacity() << endl; // (example) 15
+    printString(s); /* 0/15 */
 
-    // reserve to enlarge or enshrink
+    // enlarge capacity
     s.reserve(1000); 
-    cout << s.capacity() << endl; // 1000
-    cout << endl; 
+    printString(s); /* 0/1000 */
 
-    // length() different with capacity()
-    s = "Good"; 
-    cout << s.length() << endl; // 4
-    cout << s.capacity() << endl; // 1000
-    cout << endl; 
+    // assign data
+    s = "Google"; 
+    printString(s); /* 6/1000 */
 
     // shrink_to_fit()
     s.shrink_to_fit(); 
-    cout << s.length() << endl; // 4
-    cout << s.capacity() << endl; // (example) 15
+    printString(s);  /* 6/15 */
+
+}
+
+
+void test7() {
+
+    string s; 
+
+    s.resize(5); // fill with '\0'
+    cout << s.length() << endl; // 5
+
+/*
+    consider s.resize(5) after s = "abc"
+    it feels natural to fill with '\0'
+
+    but then strlen and s.size() diverge
+*/
+    
+    s += "x"; 
+    cout << s.length()        << endl; // 6
+    cout << strlen(s.c_str()) << endl; // 0
+
+    cout << s         << endl; // x
+    cout << s.c_str() << endl; // [empty]
+
+/*
+    std::string -> '\0' is    just another char
+
+    strlen      -> '\0' means the end of the string
+*/
+
 }
 
 void test8(){
 
-    string s; 
+    string a = "abc"; 
 
-    // s = string({'\0', '\0', '\0', '\0', '\0'}); 
-    s.resize(5);
+    // enlarge
+    a.resize(5, 'x'); 
+    cout << a << endl; // abcxx 
 
-    cout << s.length() << endl; // 5
-    cout << endl; 
-
-    s.append("x"); 
-    cout << s << endl; // x
-    cout << s.length() << endl; // 6
-    cout << endl; 
-
-    cout << s.c_str() << endl; // [empty] 
-    cout << strlen(s.c_str()) << endl; // 0
-
-
-/*
-
-    think this: there is no reason not to place \0
-
-    consider s.resize(5) after s = "abc" 
-
-    it feels natural to fill \0
-    
-    but after that moment strlen and s.size() start to diverge
-
-    so you have to be causious
-
-*/
-
-/*
-
-    in std::string \0 is just another char
-
-    but in strlen it means the end of the string
-
-*/
+    // enshrink
+    a.resize(2); 
+    cout << a << endl; // ab
 
 }
 
 void test9(){
 
-    string s = "abc"; 
-
-    // 확대
-
-    s.resize(5, 'x');
-    
-    cout << s << endl; // abcxx
-
-    // 축소
-    s.resize(2); 
-
-    cout << s << endl; // ab
-
-}
-
-void test10(){
-
     string s = "not empty"; 
 
     s.clear(); 
 
-    // empty
-    cout << (s.empty() ? "empty" : "not empty") << endl; 
+    cout << s.empty() << endl; // 1
 
+}
+
+void test10() {
+
+    string s = "hello"; 
+
+    cout << s[2]    << endl; // l
+    cout << s.at(2) << endl; // l
+    
+/*
+    .at() -> is the given idx valid?
+*/
+
+    cout << s.front() << endl; // h 
+    cout << s.back()  << endl; // o 
+
+    s.front() = toupper(s.front()); 
+    s.back () = toupper(s.back ()); 
+
+    cout << s << endl; // HellO
+
+/* 
+    do not call 
+    either front() or back()
+
+    when given string is empty()
+*/
 }
 
 void test11(){
 
-    string s = "hello"; 
+    string s = []() -> string {
+        string s; 
+        for(char c='A';c<='K';c++){
+            s += c; 
+        }
+        return s; 
+    }(); // ABCDEFGHIJK
 
-    cout << s[2] << endl; // l
-    cout << s.at(2) << endl; // l
+    // magic spell
+    ios::sync_with_stdio(false); 
+    cin.tie(nullptr); 
 
-    cout << endl; 
-
-/*
-    at() checks 
-    whehter the given idx is valid
-*/
-
-    cout << s.front() << endl; // h
-    cout << s.back() << endl; // o
-    cout << endl; 
-
-    s.front() = 'H', s.back() = 'O';
-    cout << s; // HellO
-    cout << endl; 
-
-/*
-
-    Warning: do not call
-
-    either front() or back()
-
-    when given string is empty
-
-*/
-
-}
-
-void test12(){
-
-/*
-    use iterator to traverse
-*/
-    string s = "abcdefghijk";
-    
-    // abcdefghijk
+    // ABCDEFGHIJK
     for(auto it = s.begin(); it != s.end(); it++){
         cout << *it; 
     }
     cout << endl; 
 
-    // kjihgfedcba
+    // KJIHGFEDCBA
     for(auto it = s.rbegin(); it != s.rend(); it++){
         cout << *it; 
     }
     cout << endl; 
 
-    // kjihgfedcba
+    // KJIHGFEDCBA
     sort(s.begin(), s.end(), greater<>()); 
     cout << s << endl; 
 
-    // abcdefghijk
+    // ABCDEFGHIJK
     reverse(s.begin(), s.end()); 
     cout << s << endl; 
 
-    // abcdefghijk
+    // ABCDEFGHIJK
     for(char c: s){
         cout << c; 
     }
     cout << endl; 
 
-    // zyxwvutsrqp
-    for(char& c: s){
-        c = ('z' + 'a') - c; 
+    // ZYXWVUTSRQP
+    for(char &c: s){
+        c = ('Z' + 'A') - c; 
     }
     cout << s << endl; 
 }
 
-void test13(){
+void test12(){
 
     string s; 
-    
     string other = "helloworld"; 
 
-    s += "abc "; 
-
-    s += [other]() -> string {
-
+    other = [other](){
         string result = other; 
-        
         for(auto &c : result){
             c = ('z' + 'a') - c; 
         }
-
         return result; 
     }(); 
-
-    // abc svooldliow
-    cout << s << endl;
     
+    s += "abc ";
+    s += other;  
+    cout << s << endl; // abc svooldliow
+
     s.push_back('!'); 
+    cout << s << endl; // abc svooldliow!
 
-    // abc svooldliow!
-    cout << s << endl; 
+    s.pop_back(); 
+    cout << s << endl; // abc svooldliow
 
+}
+
+void test13() {
+
+    // rotating string
+    auto func = [](int n) {
+        string s;
+        for (int i = 0; i < n; i++) {
+            s.push_back('A' + (i % 26));
+        }
+        return s;
+    };
+
+    // print vector
+    auto printVector = [](const vector<char>& v) {
+        for (auto value : v) {
+            cout << value;
+        }
+        cout << '\n';
+    };
+
+    // --------------------------
+
+    string s = "OLD|";
+    string a = "OLD|", b = "OLD|";
+
+    // using char
+    s.append(5, 'x');
+    cout << s << '\n'; // OLD|xxxxx
+    cout << '\n';
+
+    // using string
+    s = a = b = "OLD|";
+
+    s.append(func(7));       // OLD|ABCDEFG
+    a.append(func(7), 1);    // OLD|BCDEFG
+    b.append(func(7), 1, 2); // OLD|BC
+
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
+
+    // prepare buffer
+    char buf[100];
+    strcpy(buf, func(7).c_str());
+
+    cout << buf << '\n'; // ABCDEFG
+    cout << '\n';
+
+    // using buf
+    s = a = b = "OLD|";
+
+    s.append(buf);        // OLD|ABCDEFG
+    a.append(buf, 3);     // OLD|ABC
+    b.append(buf + 2, 3); // OLD|CDE
+
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
+
+    // prepare vector
+    s = func(7);
+
+    vector<char> v(s.begin(), s.end());
+    printVector(v); // ABCDEFG
+
+    // using vector
+    s = "OLD|";
+
+    s.append(v.begin(), v.end());
+    cout << s << '\n'; // OLD|ABCDEFG
 }
 
 void test14() {
 
-    auto func = [](int n) -> string{
+    // rotating string
+    auto func = [](int n) {
         string s;
-        for(int i=0;i<n;i++){
-            s.push_back('a' + (i % 26)); 
+        for (int i = 0; i < n; i++) {
+            s.push_back('A' + (i % 26));
         }
-        return s; 
-    }; 
+        return s;
+    };
 
-    // append string
-    string s = ""; 
-    s.append("abcdef"); 
-    s.append("abcdef", 2, 1);  
-    cout << s << endl; // abcdefc
-    
-    // append buf
-    char buf[10]; 
-    strcpy(buf, func(5).c_str()); 
-    
-    s.clear(); 
-    s.append(buf, 2); 
-    cout << s << endl; // ab
-
-    // append char
-    s.clear(); 
-    s.append(5, 'x'); 
-    cout << s << endl; // xxxxx
-
-    // append iterator range
-    vector<char> v = [func](){
-        string s = func(20); 
-        return vector<char>(s.begin(), s.end()); 
-    }(); 
-    s.clear(); 
-    s.append(v.begin(), v.begin()+5); 
-    cout << s << endl; // abcde
-
-}
-
-void test15() {
-
-    string s = "hello"; 
-
-    s.pop_back(); 
-
-    cout << s << endl; // hell
-
-}
-
-void test16() {
-
-    // ABCD...
-    auto func = [](int n){
-        string s; 
-        for(int i=0;i<n;i++){
-            s.push_back('A' + (i % 26)); 
+    // print vector
+    auto printVector = [](const vector<char>& v) {
+        for (auto value : v) {
+            cout << value;
         }
-        return s; 
-    }; 
+        cout << '\n';
+    };
 
-    string s; 
+    // --------------------------
 
-    // assign string
-    s.assign(func(5)); 
-    cout << s << endl; 
+    string s = "OLD|";
+    string a = "OLD|", b = "OLD|";
 
-    // assign partial string
-    s.clear(); 
-    s.assign(func(15), 2, 3); // CDE
-    cout << s << endl; 
+    // using char
+    s.assign(5, 'x');
+    cout << s << '\n'; // xxxxx
+    cout << '\n';
 
-    // assign buf
-    char buf[100]; 
-    strcpy(buf, func(15).c_str()); 
+    // using string
+    s = a = b = "OLD|";
 
-    s.clear(); 
-    s.assign(buf, 7); // ABCDEFG
-    cout << s << endl; 
+    s.assign(func(7));       // ABCDEFG
+    a.assign(func(7), 1);    // BCDEFG
+    b.assign(func(7), 1, 2); // BC
 
-    // in this case 
-    // buf is considered to be str
-    s.clear(); 
-    s.assign(buf, 2, 3); // CDE
-    cout <<s << endl; 
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
 
-    // assign from iterator
-    vector<char> v = [func]() {
-        string s = func(20); 
-        return vector<char> (s.begin(), s.end()); 
-    }(); 
-    s.clear(); 
-    s.assign(v.begin(), v.begin()+2); // AB
-    cout << s << endl; 
+    // prepare buffer
+    char buf[100];
+    strcpy(buf, func(7).c_str());
 
-    // assign from char
-    s.clear(); 
-    s.assign(5, 'x'); // xxxxx
-    cout << s << endl; 
+    cout << buf << '\n'; // ABCDEFG
+    cout << '\n';
 
-}
+    // using buf
+    s = a = b = "OLD|";
 
-void test17() {
+    s.assign(buf);        // ABCDEFG
+    a.assign(buf, 3);     // ABC
+    b.assign(buf + 2, 3); // CDE
 
-    auto func = [](int n){
-        string s(n, '\0'); 
-        for(int i=0;i<n;i++){
-            s[i] = 'A' + (i % 26); 
-        }
-        return s; 
-    }; 
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
 
-    string s = func(10); 
-    s.insert(2, "  "); 
+    // prepare vector
+    s = func(7);
 
-    cout << s << endl; // AB  CDEFGHIJ
+    vector<char> v(s.begin(), s.end());
+    printVector(v); // ABCDEFG
 
-}
+    // using vector
+    s = "OLD|";
 
-void test18() {
-
-    string s = "ddddaaaaabbbc"; 
-
-    sort(s.begin(), s.end()); 
-
-    s.erase(unique(s.begin(), s.end()), s.end()); 
-
-    cout << s << endl; // abcd
-
+    s.assign(v.begin(), v.end());
+    cout << s << '\n'; // ABCDEFG
 }
 
 
 int main(){
 
-    test18(); 
+    test15();
+
 }
