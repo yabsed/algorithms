@@ -535,10 +535,233 @@ void test14() {
     cout << s << '\n'; // ABCDEFG
 }
 
+void test15(){
+
+    string s; 
+    string a, b; 
+
+    // use string
+    s = "ab__ef"; 
+    s.insert(3, "cd"); 
+    cout << s << endl; // ab_cd_ef
+
+    // use partial string
+    s = "ab__gh"; 
+    s.insert(3, "abcdefg", 2, 4); 
+    cout << s << endl; // ab_cdef_gh
+
+    // use char
+    s = "ab__de"; 
+    s.insert(3, 5, 'c'); 
+    cout << s << endl; // ab_ccccc_de
+
+    // use iterator pos 
+    s = "ab__de"; 
+    s.insert(s.begin()+3, 'c'); 
+    cout << s << endl;  // ab_c_de
+
+    s = "ab__de"; 
+    s.insert(s.begin()+3, 5, 'c'); 
+    cout << s << endl;  // ab_ccccc_de
+
+    // use vector
+    vector <char> v = {'C', 'C'}; 
+    s = "ab__de"; 
+    s.insert(s.begin()+3, v.begin(), v.end()); 
+    cout << s << endl; // ab_CC_de
+
+}
+
+void test16(){
+
+    string s; 
+
+    // using idx
+    s = "AB___C"; 
+    s.erase(2, 3);
+    cout << s << endl; // ABC
+
+    s = "AB_____"; 
+    s.erase(2); 
+    cout << s << endl; // AB
+
+    // using it
+    s = "AB_CDE"; 
+    s.erase(s.begin() + 2); 
+    cout << s << endl; // ABCDE
+
+    s = "A_____BC"; 
+    s.erase(s.begin()+1, s.end()-2); 
+    cout << s << endl; // ABC
+
+}
+
+void test17(){
+
+    string s; 
+/*
+    replace(pos, count, other); 
+*/
+    s = "Ilike_andcats"; 
+    s.replace(5, 1, "DOGS"); 
+    cout << s << endl; // IlikeDOGSandcats
+/*
+    replace(pos, count,
+            other, other_pos, other_count); 
+*/
+    s = "Ilike___andcats"; 
+    s.replace(5, 3, "__DOGS_", 2, 4); 
+    cout << s << endl; // IlikeDOGSandcats
+
+    // use char
+    s = "Ilike____andcats"; 
+    s.replace(5, 4, 8, 'X'); 
+    cout << s << endl; // IlikeXXXXXXXXandcats
+
+    // use iterator
+    s = "Ilike___andcats"; 
+    s.replace(s.begin()+5, s.begin()+8, 5, '?'); 
+    cout << s << endl; // Ilike?????andcats
+}
+
+void test18(){
+
+    // magic source
+    ios::sync_with_stdio(false); 
+    cin.tie(nullptr); 
+
+    string a = "AAAA"; 
+    string b = "BBBB"; 
+
+    swap(a, b); 
+
+    cout << a << endl; // BBBB 
+    cout << b << endl; // AAAA
+
+    a.swap(b); 
+
+    cout << a << endl; // AAAA
+    cout << b << endl; // BBBB
+
+}
+
+void test19(){
+
+    string s; 
+    string a, b; 
+
+    s = "_____abCD"; 
+
+    a = s.substr(5, 2); 
+    cout << a << endl; // ab
+
+    b = s.substr(5); 
+    cout << b << endl; // abCD 
+
+}
+
+void test20(){
+
+    string s; 
+    size_t pos; 
+
+    s = "...345....012..."; 
+    pos = 0; 
+
+    while((pos = s.find("...", pos)) != string::npos){
+        cout << pos++ << endl; 
+    }
+/*
+    0
+    6
+    7
+    13
+*/
+    s = "...345..."; 
+    pos = 0; 
+        while((pos = s.find('.', pos)) != string::npos){
+        cout << pos++ << endl; 
+    }
+/*
+    0
+    1
+    2
+    6
+    7
+    8
+*/
+}
+
+void test21(){
+
+    string s; 
+    size_t pos; 
+
+    s = "...345....012..."; 
+    pos = s.size(); 
+
+    while(pos && ((pos = s.rfind("...", pos-1)) != string::npos)){
+        cout << pos << endl; 
+    }
+/*
+    13
+    7
+    6
+    0
+*/
+}
+
+void test22(){
+
+    string s, q; 
+    size_t pos; 
+
+    s = "012__56__9"; 
+    q = "9876543210"; 
+
+    pos = 0; 
+
+    while((pos = s.find_first_of(q, pos)) != string::npos){
+        cout << pos++ << endl; 
+    }
+
+/*
+    0
+    1
+    2
+    5
+    6
+    9
+*/
+}
+
+void test23(){
+
+    string s, q; 
+    size_t pos; 
+
+    s = "012__56__9"; 
+    q = "9876543210"; 
+
+    pos = s.size(); 
+
+    while(pos && ((pos = s.find_last_of(q, pos-1)) != string::npos)){
+        cout << pos << endl; 
+    }
+/*
+    9
+    6
+    5
+    2
+    1
+    0
+*/
+}
+
 
 
 int main(){
 
-    test15();
+    test21();
 
 }
