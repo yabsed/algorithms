@@ -541,35 +541,34 @@ void test15(){
     string a, b; 
 
     // use string
-    s = "ab__ef"; 
-    s.insert(3, "cd"); 
-    cout << s << endl; // ab_cd_ef
+    s = "012345"; 
+    s.insert(3, "__"); 
+    cout << s << endl; // 012__345
 
     // use partial string
-    s = "ab__gh"; 
-    s.insert(3, "abcdefg", 2, 4); 
-    cout << s << endl; // ab_cdef_gh
+    s = "012345"; 
+    s.insert(3, "abcdef", 2, 4); 
+    cout << s << endl; // 012cdef345
 
     // use char
-    s = "ab__de"; 
-    s.insert(3, 5, 'c'); 
-    cout << s << endl; // ab_ccccc_de
+    s = "012345"; 
+    s.insert(3, 5, '_'); 
+    cout << s << endl; // 012_____345
 
-    // use iterator pos 
-    s = "ab__de"; 
-    s.insert(s.begin()+3, 'c'); 
-    cout << s << endl;  // ab_c_de
+    // use iterator pos
+    s = "012345"; 
+    s.insert(s.begin()+3, '_'); // 012_345
+    cout << s << endl; 
 
-    s = "ab__de"; 
-    s.insert(s.begin()+3, 5, 'c'); 
-    cout << s << endl;  // ab_ccccc_de
+    s = "012345"; 
+    s.insert(s.begin()+3, 5, '_'); 
+    cout << s << endl; // 012_____345
 
-    // use vector
-    vector <char> v = {'C', 'C'}; 
-    s = "ab__de"; 
-    s.insert(s.begin()+3, v.begin(), v.end()); 
-    cout << s << endl; // ab_CC_de
-
+    // use set
+    set <char> mySet = {'a', 'b', 'c'}; 
+    s = "012345"; 
+    s.insert(s.begin()+3, mySet.begin(), mySet.end()); // 012abc345
+    cout << s << endl; 
 }
 
 void test16(){
@@ -577,23 +576,40 @@ void test16(){
     string s; 
 
     // using idx
-    s = "AB___C"; 
-    s.erase(2, 3);
-    cout << s << endl; // ABC
+    s = "0123456789"; 
+    s.erase(7, 2); 
+    cout << s << endl; // 01234569
 
-    s = "AB_____"; 
-    s.erase(2); 
-    cout << s << endl; // AB
+    s = "0123456789"; 
+    s.erase(7); 
+    cout << s << endl; // 0123456
 
-    // using it
-    s = "AB_CDE"; 
-    s.erase(s.begin() + 2); 
-    cout << s << endl; // ABCDE
+    // using iterator
+    s = "0123456789"; 
+    s.erase(s.begin() + 7); 
+    cout << s << endl; // 012345689
 
-    s = "A_____BC"; 
-    s.erase(s.begin()+1, s.end()-2); 
-    cout << s << endl; // ABC
+    s = "0123456789"; 
+    s.erase(s.begin() + 7, s.begin() + 9); 
+    cout << s << endl; // 01234569
+    cout << endl; 
 
+    // ----------------------------
+
+    // example: remove duplicate
+    s = "ccddbbaaff"; 
+
+    // step 1. sort
+    sort(s.begin(), s.end()); 
+    cout << s << endl; 
+    
+    // step 2. unique
+    auto it = unique(s.begin(), s.end()); 
+    cout << s << endl; 
+
+    // step 3. erase
+    s.erase(it, s.end()); 
+    cout << s << endl; 
 }
 
 void test17(){
@@ -758,10 +774,8 @@ void test23(){
 */
 }
 
-
-
 int main(){
 
-    test21();
+    test16();
 
 }
