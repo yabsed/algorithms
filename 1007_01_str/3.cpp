@@ -384,92 +384,170 @@ void test12(){
     s.push_back('!'); 
     cout << s << endl; // abc svooldliow!
 
+    s.pop_back(); 
+    cout << s << endl; // abc svooldliow
+
 }
 
-void test13(){
-
-    // magic spell
-    ios::sync_with_stdio(false); // not ios.sync...
-    cin.tie(nullptr); 
+void test13() {
 
     // rotating string
-    auto func = [](int n){
-        string s; 
-        for(int i=0;i<n;i++){
-            s.push_back('A' + (i % 26)); 
+    auto func = [](int n) {
+        string s;
+        for (int i = 0; i < n; i++) {
+            s.push_back('A' + (i % 26));
         }
-        return s; 
-    }; 
+        return s;
+    };
 
     // print vector
-    auto printVector = [](vector<char> v){
-        for(auto value: v){
-            printf("%c", value); 
+    auto printVector = [](const vector<char>& v) {
+        for (auto value : v) {
+            cout << value;
         }
-        printf("\n"); 
+        cout << '\n';
     };
 
     // --------------------------
 
-    string s;
-    string a, b; 
+    string s = "OLD|";
+    string a = "OLD|", b = "OLD|";
 
     // using char
-    s.append(5, 'x'); 
-    cout << s << endl; // xxxxx
-    cout << endl; 
+    s.append(5, 'x');
+    cout << s << '\n'; // OLD|xxxxx
+    cout << '\n';
 
     // using string
-    s.clear(); 
+    s = a = b = "OLD|";
 
-    s.append(func(7));       // ABCDEFG 
-    a.append(func(7), 1);    //  BCDEFG
-    b.append(func(7), 1, 2); //  BC
+    s.append(func(7));       // OLD|ABCDEFG
+    a.append(func(7), 1);    // OLD|BCDEFG
+    b.append(func(7), 1, 2); // OLD|BC
 
-    printf("%7s\n", s.c_str()); 
-    printf("%7s\n", a.c_str());
-    printf("%3s\n", b.c_str());  
-    cout << endl; 
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
 
     // prepare buffer
-    char buf[100]; 
-    strcpy(buf, func(7).c_str()); // should use c_str()
+    char buf[100];
+    strcpy(buf, func(7).c_str());
 
-    printf("%s\n", buf); // ABCDEFG
-    printf("\n"); 
-    
+    cout << buf << '\n'; // ABCDEFG
+    cout << '\n';
+
     // using buf
-    s.clear(); 
-    a.clear(); 
-    b.clear(); 
+    s = a = b = "OLD|";
 
-    s.append(buf);      // ABCDEFG
-    a.append(buf, 3);   // ABC
-    b.append(buf+2, 3);    //CDE
+    s.append(buf);        // OLD|ABCDEFG
+    a.append(buf, 3);     // OLD|ABC
+    b.append(buf + 2, 3); // OLD|CDE
 
-    printf("%7s\n", s.c_str()); 
-    printf("%7s\n", a.c_str());
-    printf("%3s\n", b.c_str());  
-    cout << endl; 
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
 
     // prepare vector
-    s = func(7); 
+    s = func(7);
 
-    vector<char> v(s.begin(), s.end()); 
+    vector<char> v(s.begin(), s.end());
     printVector(v); // ABCDEFG
 
     // using vector
-    s.clear(); 
+    s = "OLD|";
 
-    s.append(v.begin(), v.end()); 
-    cout << s << endl; // ABCDEFG
+    s.append(v.begin(), v.end());
+    cout << s << '\n'; // OLD|ABCDEFG
+}
+
+void test14() {
+
+    // rotating string
+    auto func = [](int n) {
+        string s;
+        for (int i = 0; i < n; i++) {
+            s.push_back('A' + (i % 26));
+        }
+        return s;
+    };
+
+    // print vector
+    auto printVector = [](const vector<char>& v) {
+        for (auto value : v) {
+            cout << value;
+        }
+        cout << '\n';
+    };
+
+    // --------------------------
+
+    string s = "OLD|";
+    string a = "OLD|", b = "OLD|";
+
+    // using char
+    s.assign(5, 'x');
+    cout << s << '\n'; // xxxxx
+    cout << '\n';
+
+    // using string
+    s = a = b = "OLD|";
+
+    s.assign(func(7));       // ABCDEFG
+    a.assign(func(7), 1);    // BCDEFG
+    b.assign(func(7), 1, 2); // BC
+
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
+
+    // prepare buffer
+    char buf[100];
+    strcpy(buf, func(7).c_str());
+
+    cout << buf << '\n'; // ABCDEFG
+    cout << '\n';
+
+    // using buf
+    s = a = b = "OLD|";
+
+    s.assign(buf);        // ABCDEFG
+    a.assign(buf, 3);     // ABC
+    b.assign(buf + 2, 3); // CDE
+
+    cout << s << '\n';
+    cout << a << '\n';
+    cout << b << '\n';
+    cout << '\n';
+
+    // prepare vector
+    s = func(7);
+
+    vector<char> v(s.begin(), s.end());
+    printVector(v); // ABCDEFG
+
+    // using vector
+    s = "OLD|";
+
+    s.assign(v.begin(), v.end());
+    cout << s << '\n'; // ABCDEFG
+}
+
+void test15(){
+
+    string s = "olddddd"; 
+
+    s.assign("daf"); 
+
+    cout << s << endl; 
 
 }
 
 
-
 int main(){
 
-    test13();
+    test15();
 
 }
