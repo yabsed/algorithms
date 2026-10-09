@@ -774,8 +774,127 @@ void test23(){
 */
 }
 
+void test24(){
+
+    string s, q; 
+    size_t pos; 
+
+    s = "___34_67__"; 
+    q = "0123456789"; 
+
+    pos = 0; 
+    
+    while((pos = s.find_first_not_of(q, pos)) != string::npos){
+        cout << pos++ << endl; 
+    }
+/*
+    0
+    1
+    2
+    5
+    8
+    9
+*/
+}
+
+void test25(){
+    string s, q; 
+    size_t pos; 
+
+    s = "___34_67__"; 
+    q = "0123456789"; 
+
+    pos = s.size(); 
+    
+    while(pos && (pos = s.find_last_not_of(q, pos-1)) != string::npos){
+        cout << pos << endl; 
+    }
+/*
+    9
+    8
+    5
+    2
+    1
+    0
+*/
+}
+
+void test26(){
+
+    vector<string> samples = {
+        "baby", 
+        "zoo", 
+        "usa", 
+        "apple"
+    }; 
+
+    sort(samples.begin(), samples.end()); 
+
+    for(auto sample: samples){
+        cout << sample << endl; 
+    }
+/*
+    apple
+    baby
+    usa
+    zoo
+*/
+    cout << ("abc"s < "abd"s) << endl; // 1
+    cout << ("cat"s < "apple"s) << endl; // 0
+/*
+    do not "abc" < "abd"
+    comparison between two arrays is deprecated in C++20
+*/
+    cout << ("abc"s != "abc"s) << endl; // 0
+}
+
+
+void test27() {
+
+    const char* a = "notString";
+    string b = a; // const char* -> string (copy)
+
+    printf("%s\n", a);
+    printf("%s\n", b.c_str());
+
+/*
+    const char* comparison
+    
+    ==, != : compare pointer addresses
+    <, >   : compare pointer ordering
+    
+    They do NOT compare string contents.
+*/
+
+    const char* x = "abc";
+    const char* y = "abd";
+
+    cout << (x == y) << endl; // compares addresses
+    cout << (x < y) << endl;  // NOT lexicographical
+
+/*
+    std::string comparison
+    
+    ==, != : compare string contents
+    <, >   : lexicographical comparison
+*/
+
+    string p = "abc";
+    string q = "abd";
+
+    cout << (p == q) << endl; // false
+    cout << (p < q) << endl;  // true
+
+/*
+    C-style lexicographical comparison
+*/
+
+    cout << (strcmp(x, y) < 0) << endl; // true
+}
+
+
 int main(){
 
-    test16();
+    test27();
 
 }
