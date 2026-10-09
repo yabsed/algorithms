@@ -1022,69 +1022,72 @@ void test33() {
     cout << stold("-1e4000") << endl;
 }
 
-void test34() {
+void test34(){
 
-    string ip = "124.5.7.0"; 
+    string ip = "12.0.12.1"; 
 
-    // goal: validity of ip addr
-    vector<int> positions = {-1, }; 
-    size_t pos = 0; 
-    while((pos = ip.find('.', pos)) != string::npos){
-        positions.push_back(pos++); 
+    // step 1. check dots
+    size_t point = 0; 
+    vector<int> points = {-1, }; 
+    while((point = ip.find('.', point)) != string::npos){
+        points.push_back(point++); 
     }
-    positions.push_back(ip.size()); 
+    points.push_back(ip.length()); 
 
-    // has tree dots?
-    if(positions.size() != 5){
-        printf("INVALID\n"); 
+    // step 2. three dots?
+    if (points.size() != 5){
+        cout << "NO" << endl; 
         return; 
     }
 
-    // investigate chunks
+    // step 3. consider each substr
     for(int i=0;i<4;i++){
-
-        int pos1 = positions[i]; 
-        int pos2 = positions[i+1]; 
-
-        // .123.
-        if (pos2 - pos1 > 4){
-            printf("INVALID\n"); 
+        int pos1 = points[i]; 
+        int pos2 = points[i+1]; 
+        
+        // consider .1. and .123.
+        int delta = pos2 - pos1; 
+        if(!(2 <= delta && delta <= 4)){
+            cout << "NO" << endl; 
             return; 
         }
 
-        // ..
-        if (pos2 - pos1 <= 1){
-            printf("INVALID\n"); 
+        // create str
+        string str = ip.substr(pos1+1, pos2-pos1-1); 
+
+        // only numbers?
+        if(str.find_first_not_of("0123456789") != string::npos){
+            cout << "NO" << endl; 
             return; 
         }
 
-        string chunk = ip.substr(pos1+1, pos2-pos1-1);
+        int value = stoi(str); 
 
-        // not pure numbers
-        if (string::npos != chunk.find_first_not_of("0123456789", 0)){
-            printf("INVALID\n"); 
-            return; 
-        } 
-
-        // unnecessary 0
-        if(to_string(stoi(chunk)) != chunk){
-            printf("INVALID\n"); 
+        // 0~255
+        if(!(0 <= value && value <= 255)){
+            cout << "NO" << endl; 
             return; 
         }
 
-        // invalid value
-        if(!(0 <= stoi(chunk) && stoi(chunk) <= 255)){
-            printf("INVALID\n"); 
+        // to_string
+        if(to_string(value) != str){
+            cout << "NO" << endl; 
             return; 
         }
-
     }
 
-    printf("VALID\n"); 
+    cout << "YES" << endl; 
+    return; 
+}
+
+void test35(){
+
+    
+
 }
 
 int main(){
 
-    test34();
+    test35();
 
 }
