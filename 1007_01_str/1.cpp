@@ -892,9 +892,46 @@ void test27() {
     cout << (strcmp(x, y) < 0) << endl; // true
 }
 
+void test28() {
+
+    // naive 
+    cout << ("A"s.compare("Z")  < 0) << endl; // true
+    cout << ("A"s.compare("A") == 0) << endl; // true
+    cout << ("Z"s.compare("A")  > 0) << endl; // true
+    
+    // because AAAA < ZZZZ
+    string a = "AAAAZZZZ"; 
+    auto result1 = a.compare(0, 4, a, 4, 4); 
+    // (pos1, count1, b, pos2, count2)
+    cout << (result1 < 0) << endl; // true
+    
+    // because AAAA == AAAA
+    string b = "AAAA"; 
+    auto result2 = a.compare(0, 4, b); 
+    // (pos, count, b)
+    cout << (result2 == 0) << endl; // true
+}
+
+void test29() {
+
+    string s = "0123456789"; 
+
+    // C++20
+    cout << (s.starts_with('0')) << endl; 
+    cout << (s.ends_with  ("789")) << endl; 
+    // older
+    cout << (s. find('0') == 0) << endl; 
+    cout << (s.size() >= 3 && s.rfind("789") == s.size() - 3) << endl; 
+/*
+    consider s.size() can be < 3
+*/
+    // contains?
+    cout << (s.find("456") != string::npos) << endl; 
+}
+
 
 int main(){
 
-    test27();
+    test29();
 
 }
