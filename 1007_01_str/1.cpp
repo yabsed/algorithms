@@ -929,9 +929,72 @@ void test29() {
     cout << (s.find("456") != string::npos) << endl; 
 }
 
+void test30(){
+
+    char buf[100]; 
+    string s; 
+    size_t idx; 
+
+    // strcpy: copies including '\0'
+    s = "0123"; 
+    strcpy(buf, s.c_str()); 
+    cout << buf << endl; // 0123
+
+    // string::copy: does NOT append '\0'
+    s = "0123456789"; 
+    idx = s.copy(
+        buf+4, 
+        4,
+        4
+    ); 
+    (buf+4)[idx] = '\0';
+    cout << buf << endl; // 01234567
+}
+
+void test31() {
+/*
+    printf("%s") accepts both
+    char* and const char*.
+    
+    The character sequence must be null-terminated.
+*/
+    string s = "hello world"; 
+
+    // read-only
+    printf("%s\n", s.c_str()); 
+
+    // writable since C++17
+    s.data()[0] = 'H'; 
+    printf("%s\n", s.data()); 
+
+    // both are null-terminated since C++11
+}
+
+void test32() {
+/*
+    consider lifespan of memory space
+    when using either c_str() or data()
+*/
+    string s = "hello"; 
+
+    const char* p = s.c_str(); 
+
+    s += string(1000, 'c'); // very long string
+
+    p = s.c_str(); // Refresh before dereferencing (otherwise UB)
+
+    cout << (p[0] == 'h') << endl; // true
+}
+
+void test33(){
+
+    int x = stoi("")
+
+}
+
 
 int main(){
 
-    test29();
+    test33();
 
 }
