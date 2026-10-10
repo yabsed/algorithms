@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include <cctype>
+#include <random>
 using namespace std; 
 
 void test1(){
@@ -1118,8 +1120,194 @@ void test35(){
 
 }
 
+void test36(){
+
+    int n; 
+    size_t idx; 
+
+    n = stoi("012_is_it_future?", &idx, 10); 
+
+    cout << n << endl; // 12
+    cout << idx << endl; // 3
+
+    n = stoi("012345", &idx); 
+
+    cout << n << endl; // 12345
+    cout << idx << endl; // 6
+
+}
+
+void test37(){
+
+    cout << to_string(123LL) << endl; 
+    cout << to_string(3.14) << endl; 
+
+}
+
+void test38(){
+
+    int n; 
+    
+    n = stoi("-123##"); 
+    cout << n << endl; // -123
+
+    try {
+        n = stoi("###123"); 
+    } catch (const exception&) {
+        cout << "can raise exception when prefix is not valid" << endl; 
+    }
+
+    // that is why you still need
+    // find_first_not_of in IP parsing
+
+}
+
+void test39(){
+
+    string a = "012"; 
+    string b = "345"; 
+
+    const char* c = "abc"; 
+
+    cout << a + b << endl; // 012345
+    cout << a + c << endl; // 012abc
+    cout << c + a << endl; // abc012
+
+    cout << a + '_' << endl; // 012_
+    cout << '_' + a << endl; // _012
+
+
+    // cout << ("012" + "345") << endl; 
+    
+    // invalid operands of types ‘const char*’ and 
+    // ‘const char*’ to binary ‘operator+’
+
+    // ------------
+
+    auto s1 = "string"s; 
+    printf("%s\n", s1.c_str()); 
+
+    auto s2 = "const char*"; 
+    printf("%s\n", s2); 
+
+}
+
+void test40(){
+
+    auto rndStr = [](int n){
+
+        static mt19937 gen(random_device{}()); 
+        uniform_int_distribution<> distrib('a', 'z'); 
+
+        string s; 
+        for(int i=0;i<n;i++){
+            s.push_back(distrib(gen)); 
+        }
+
+        return s; 
+
+    }; 
+
+    string s = rndStr(20); 
+    printf("original: %s\n", s.c_str()); 
+
+    // count
+    int cnt = count(s.begin(), s.end(), 'a'); 
+    printf("# of a: %d\n", cnt); 
+
+    // count_if
+    int cnt_xdigit = count_if(s.begin(), s.end(), [](char c){
+        return isxdigit(c); 
+    }); 
+    printf("# of xdigits: %d\n", cnt_xdigit); 
+
+    // sort
+    sort(s.begin(), s.end()); 
+    printf("sorted: %s\n", s.c_str()); 
+    
+    // reverse
+    reverse(s.begin(), s.end()); 
+    printf("reverse: %s\n", s.c_str()); 
+    
+}
+
+void test41(){
+
+    string s = "...34.."; 
+
+    // use &s instead of s
+    // to prevent copying value
+
+    [&s](){
+        size_t pos = 0; 
+        while((pos = s.find('.', pos)) != string::npos){
+            cout << pos++ << endl; 
+        }
+    }(); 
+/*
+    0
+    1
+    2
+    5
+    6
+*/
+    [&s](){
+
+        auto pos = s.begin();
+        while((pos = find(pos, s.end(), '.')) != s.end()){
+            cout << (pos++ - s.begin()) << endl; 
+        }
+
+    }(); 
+/*
+    0
+    1
+    2
+    5
+    6
+*/
+}
+
+void test42(){
+
+    auto rndStr = [](int length){
+        static mt19937 rnd(random_device{}()); 
+        uniform_int_distribution<int> distrib('a', 'x'); 
+
+        string s; 
+        for(int i=0;i<length;i++){
+            s.push_back(distrib(rnd)); 
+        }
+
+        return s; 
+    }; 
+
+    string s = rndStr(20); 
+    printf("%s\n", s.c_str());
+    
+    [&s]() {
+
+        auto it = s.begin(); 
+        auto prev = s.begin(); 
+
+        while((it = find_if(it, s.end(), [](char c){
+            return isxdigit(c); 
+        })) != s.end()){
+
+            cout << string((it - prev), ' '); 
+            cout << *(it);
+            
+            prev = ++it; 
+        }
+
+        cout << endl; 
+
+    }(); 
+
+}
+
 int main(){
 
-    test35();
+    test42();
 
 }
