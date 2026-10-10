@@ -1087,8 +1087,8 @@ void test35(){
 
         // construct digits : 0...9 a...z 
         string digits; 
-        for(char c='0';c<'9';c++) digits += c; 
-        for(char c='a';c<'z';c++) digits += c; 
+        for(char c='0';c<='9';c++) digits += c; 
+        for(char c='a';c<='z';c++) digits += c; 
 
         // construct s
         string s; 
