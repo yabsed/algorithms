@@ -1022,72 +1022,104 @@ void test33() {
     cout << stold("-1e4000") << endl;
 }
 
-void test34(){
+bool test34(){
 
-    string ip = "12.0.12.1"; 
+    string ip = "125.5.1.12"; 
 
-    // step 1. check dots
-    size_t point = 0; 
+    // collect dots
+    size_t pos = 0; 
     vector<int> points = {-1, }; 
-    while((point = ip.find('.', point)) != string::npos){
-        points.push_back(point++); 
+    while((pos = ip.find('.', pos)) != string::npos){
+        points.push_back(pos++); 
     }
-    points.push_back(ip.length()); 
+    points.push_back(ip.size()); 
 
-    // step 2. three dots?
-    if (points.size() != 5){
-        cout << "NO" << endl; 
-        return; 
+    // has three dots?
+    if(points.size() != 5){
+        return false; 
     }
 
-    // step 3. consider each substr
+    // split into four chunks
     for(int i=0;i<4;i++){
+
         int pos1 = points[i]; 
         int pos2 = points[i+1]; 
-        
-        // consider .1. and .123.
-        int delta = pos2 - pos1; 
-        if(!(2 <= delta && delta <= 4)){
-            cout << "NO" << endl; 
-            return; 
+
+        // chunk length valid?
+        int delta = (pos2 - pos1) - 1; 
+        if (!(1 <= delta && delta <= 3)){
+            return false; 
         }
 
-        // create str
-        string str = ip.substr(pos1+1, pos2-pos1-1); 
+        // deduct chunk
+        string chunk = ip.substr(pos1+1, delta); 
 
         // only numbers?
-        if(str.find_first_not_of("0123456789") != string::npos){
-            cout << "NO" << endl; 
-            return; 
+        if(chunk.find_first_not_of("0123456789") != string::npos){
+            return false; 
         }
 
-        int value = stoi(str); 
-
-        // 0~255
+        // int(chunk) value valid?
+        int value = stoi(chunk); 
         if(!(0 <= value && value <= 255)){
-            cout << "NO" << endl; 
-            return; 
+            return false; 
         }
 
-        // to_string
-        if(to_string(value) != str){
-            cout << "NO" << endl; 
-            return; 
+        // str(int(chunk)) == chunk?
+        if(to_string(value) != chunk){
+            return false; 
         }
+
     }
 
-    cout << "YES" << endl; 
-    return; 
+    return true; 
 }
 
 void test35(){
 
+    string s; 
+    int n; 
+
+    auto plain = [](int n, int base) -> string {
+        if (n == 0){
+            return "0"; 
+        }
+
+        // construct digits : 0...9 a...z 
+        string digits; 
+        for(char c='0';c<'9';c++) digits += c; 
+        for(char c='a';c<'z';c++) digits += c; 
+
+        // construct s
+        string s; 
+        while(n > 0){
+            s += (digits[n % base]); 
+            n /= base; 
+        }
+        reverse(s.begin(), s.end()); 
+        return s; 
+    }; 
+
+    s = plain(100, 32); 
+    n = stoi(s, nullptr, 32); 
+
+    printf("%3s(32) %3d(10)\n", s.c_str(), n); 
+
+    // ----------------------
+
+    char buf[200]; 
+
+    auto [ptr, ec] = to_chars(buf, buf+200, 63, 32); 
     
+    s = string(buf, ptr); 
+    n = stoi(s, nullptr, 32); 
+
+    printf("%3s(32) %3d(10)\n", s.c_str(), n); 
 
 }
 
 int main(){
 
-    test29();
+    test35();
 
 }
