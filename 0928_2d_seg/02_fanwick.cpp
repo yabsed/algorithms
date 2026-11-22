@@ -1,36 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std; 
 
+typedef long long ll; 
+
 int n; 
-vector<long long> value; 
+vector<long long> values; 
 vector<long long> tree; 
-
-void update(int i, long long v){
-    for(;i<=n;i+= i & -i){
-        tree[i] += v; 
-    }
-}
-
-long long prefix(int i){
-
-    long long result = 0; 
-    for(;i>0;i-= i&-i){
-        result += tree[i]; 
-    }
-    return result; 
-}
-
-int main() {
-
-    scanf("%d", &n); 
-    value.assign(n+1, 0); 
-    tree.assign(n+1, 0); 
-
-    for(int i=1;i<=n;i++){
-        scanf("%lld", &value[i]); 
-    }
-
-}
 
 /* 
 
@@ -62,6 +37,47 @@ prefix : (idx - L, idx] ->       (어디든, idx - L]
 update : (idx - L, idx] -> (idx - L 이하, idx + L]
 
 */ 
+
+
+
+void update(int idx, ll value){
+
+    ll delta = (value - values[idx]); 
+    values[idx] = value; 
+
+    while(idx <= n){
+        tree[idx] += delta;  
+        idx += (idx & -idx); 
+    }
+
+}
+
+ll prefix(int idx){
+
+    ll result = 0; 
+
+    while(0 < idx){
+        result += tree[idx]; 
+        idx -= (idx & -idx); 
+    }
+
+    return result; 
+
+}
+
+int main() {
+
+    scanf("%d", &n); 
+    values.assign(n+1, 0); 
+    tree.assign(n+1, 0); 
+
+    for(int i=1;i<=n;i++){
+        ll value;
+        scanf("%lld", &value);
+        update(i, value);
+    }
+
+}
 
 
 /* 
