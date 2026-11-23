@@ -34,6 +34,14 @@ v보다 위쪽 세계와
 얼마나 연결되어 있나?
 ```
 
+예시 그래프 하나로 보면 이렇다.
+
+![disc와 low](img/dfs_disc_low.svg)
+
+- `low[5] = 4` : 5의 subtree `{5, 6}`에서 back edge `6 → 4`를 타면 4까지 올라간다.
+- `low[2] = 1` : 2의 subtree 안에 있는 back edge `3 → 1`을 타면 1까지 올라간다.
+- `low[7] = 7` : 7에는 올라가는 간선이 없다. 자기 `disc`가 그대로 남는다.
+
 ---
 
 ## 1. Bridge 찾기
@@ -82,6 +90,13 @@ low[u] \le disc[v]
 
 그리고 bridge를 다 제거하면 남은 connected components가 2-edge-connected components다.
 
+위 예시에서 tree edge마다 비교하면 이렇다.
+
+![bridge](img/dfs_bridge.svg)
+
+- `3 - 4` : 4의 subtree `{4, 5, 6}` 안의 back edge는 4까지만 올라간다. 3으로 돌아갈 다른 길이 없다.
+- `4 - 5` : back edge `6 → 4`가 이 간선을 건너뛴다. 그래서 bridge가 아니다.
+
 ---
 
 ## 2. Articulation point / Vertex-BCC
@@ -110,6 +125,12 @@ u subtree → ... → v
 
 `v`를 삭제하는 순간 그 길도 사라진다.
 
+자식 subtree가 어디까지 올라가는지에 따라 세 경우로 나뉜다.
+
+![세 경우](img/dfs_three_cases.svg)
+
+가운데 경우가 `=`가 필요한 이유다. `(v,u)`는 bridge가 아니지만 `v`는 단절점이다.
+
 그래서 일반 정점에 대해
 
 \[
@@ -126,6 +147,11 @@ u subtree → ... → v
 
 이면 articulation point.
 
+![DFS root](img/dfs_root.svg)
+
+- root 위에는 아무도 없다. 그래서 `low[u] >= disc[root]`가 항상 참이고, 판정에 쓸 수 없다.
+- 무방향 DFS에서는 두 자식 subtree를 직접 잇는 간선이 없다. 있었다면 DFS가 그 간선을 타고 내려가서 한 subtree가 되었을 것이다.
+
 그리고 **vertex-biconnected component 자체를 구하려면 edge stack**을 쓴다.
 
 DFS하면서 간선을 stack에 넣고,
@@ -135,6 +161,19 @@ low[u] \ge disc[v]
 \]
 
 가 되는 순간 `(v,u)`까지 pop하면 하나의 BCC다.
+
+![BCC](img/dfs_bcc.svg)
+
+위 예시에서 pop이 일어나는 순서는 이렇다.
+
+| 순간 | 판정 | pop한 간선 |
+|---|---|---|
+| 4에서 자식 5가 끝남 | `low[5] = 4 >= disc[4] = 4` | `6-4`, `5-6`, `4-5` |
+| 3에서 자식 4가 끝남 | `low[4] = 4 >= disc[3] = 3` | `3-4` |
+| 2에서 자식 7이 끝남 | `low[7] = 7 >= disc[2] = 2` | `2-7` |
+| 1에서 자식 2가 끝남 | `low[2] = 1 >= disc[1] = 1` | `3-1`, `2-3`, `1-2` |
+
+마지막 줄은 root라서 항상 pop한다. 1은 자식이 하나뿐이라 단절점은 아니다.
 
 즉 두 번째 문제는
 
@@ -184,6 +223,15 @@ v
 ```
 
 → `{v,z,y,x}` 하나의 SCC.
+
+방향 그래프 예시로 보면 이렇다.
+
+![SCC](img/dfs_scc.svg)
+
+- 정점 번호는 발견한 순서다. 그래서 번호와 `disc`가 같다.
+- `low == disc`인 정점은 1, 3, 6이다. 각자 자기 SCC에서 가장 먼저 발견된 정점이다.
+- 간선 `6 → 4`는 무시한다. 4의 SCC `{3, 4}`는 이미 확정되어 stack에 없고, 그쪽으로 가면 돌아올 수 없다.
+- 이 간선을 무시하지 않으면 `low[6]`이 4가 되어 6이 혼자 SCC라는 것을 놓친다.
 
 즉 세 번째 문제는
 
