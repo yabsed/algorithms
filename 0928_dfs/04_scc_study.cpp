@@ -19,7 +19,7 @@ stack<int> vertex_stack;
 int n; // 노드의 갯수
 int m; // 간선의 갯수 
 
-int dfs(int u){
+void dfs(int u){
 
     low[u] = disc[u] = ++timer; 
 
