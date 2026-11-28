@@ -6,30 +6,33 @@ using namespace std;
 
 typedef long long ll; 
 
-vector<vector<ll>> gen_table(vector<ll> &values){
+vector<vector<ll>> get_table(vector<ll> &values){
 
     int n = values.size(); 
-    vector<vector<ll>> result; 
 
-    result.push_back(values);
-    vector<ll> prev = values;  
+    vector<vector<ll>> result = {values, };
+    vector<ll>         prev   = values;  
 
-    for(int len=2; len <= n; len=len<<1){
+    for(int len=2; len<=n; len*=2){
 
         vector<ll> curr = {}; 
 
-        for(int i=0; i+len<=n; i++){
+        for(int i=0;i+len<=n;i++){
 
-            // [i, i+len/2)
-            // [i+len/2, i+len)
+            curr.push_back(max(
+                prev[i], 
+                prev[i+len/2]
+            )); 
 
-            curr.push_back(max(prev[i], prev[i+len/2])); 
         }
+
         result.push_back(curr); 
         prev = curr; 
 
     }
+
     return result; 
+
 }
 
 /*
@@ -43,15 +46,15 @@ vector<vector<ll>> gen_table(vector<ll> &values){
 
 ll query(
     vector<vector<ll>> &table, 
-    int l, int r 
+    int l, int r
 ){
 
     int len = r - l + 1; 
-    int msb = __lg(len);
+    int msb = __lg(len); 
 
     return max(
-        table[msb][l], 
-        table[msb][r - (1<<msb)+1]
+        table[msb][l],
+        table[msb][r - (1<<msb) + 1] 
     ); 
 
 }
